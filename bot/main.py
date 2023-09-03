@@ -9,7 +9,7 @@ from music_cog import music_cog
 async def setup():
     await bot.add_cog(help_cog(bot))
     await bot.add_cog(music_cog(bot))
-    
+ 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/', intents=intents)
 logging.basicConfig(level=logging.INFO)
