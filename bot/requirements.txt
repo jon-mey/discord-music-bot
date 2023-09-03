@@ -1,0 +1,6 @@
+discord.py[voice]
+yt-dlp
+msrest
+msrestazure
+azure-identity
+azure-mgmt-containerinstance

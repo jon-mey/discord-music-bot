@@ -1,0 +1,24 @@
+{
+  "name": "discord-music-bot-activator",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "wrangler dev server.js",
+    "publish": "wrangler deploy",
+    "update-secrets": "wrangler secret:bulk secrets.json --name discord-music-bot-activator"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "discord-interactions": "^3.4.0",
+    "itty-router": "^4.0.13"
+  },
+  "devDependencies": {
+    "wrangler": "^3.6.0"
+  }
+}

@@ -1,0 +1,6 @@
+name = "discord-music-bot-activator"
+main = "server.js"
+compatibility_date = "2023-09-01"
+kv_namespaces = [
+    { binding = "KV_DISCORD_MUSIC_BOT_ACTIVATOR", id = "<YOUR_KV_ACCOUNT_ID>" }
+]
