@@ -135,7 +135,8 @@ class music_cog(commands.Cog):
             elif song['duration'] > song_max_duration_minutes * 60:
                 await ctx.send('Song duration too long, max duration is %d minutes.' % song_max_duration_minutes)
             else:
-                await ctx.send('"%s" added to the queue.' % song['title'])
+                duration = song['duration']
+                await ctx.send('"%s" (%d:%d) added to the queue.' % (song['title'], duration // 60, duration % 60))
                 self.music_queue.append({'song': song, 'channel': voice_channel})
                 
                 if self.voice_client == None or self.voice_client.is_playing() == False:
