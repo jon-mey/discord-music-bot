@@ -129,18 +129,24 @@ class music_cog(commands.Cog):
             
             await ctx.send('Downloading metadata for <%s>...' % query)
             song = self.search_yt(query)
-            
+
             if type(song) == type(True):
                 await ctx.send('Error while downloading song metadata.')
-            elif song['duration'] > song_max_duration_minutes * 60:
-                await ctx.send('Song duration too long, max duration is %d minutes.' % song_max_duration_minutes)
             else:
                 duration = song['duration']
-                await ctx.send('"%s" (%d:%d) added to the queue.' % (song['title'], duration // 60, duration % 60))
-                self.music_queue.append({'song': song, 'channel': voice_channel})
-                
-                if self.voice_client == None or self.voice_client.is_playing() == False:
-                    await self.start_playing(ctx)
+
+                if song['duration'] > song_max_duration_minutes * 60:
+                    await ctx.send('Song duration too long, max duration is %d minutes.' % song_max_duration_minutes)
+                    
+                else:
+                    minutes = duration // 60
+                    seconds = duration % 60
+
+                    await ctx.send(f"\"{song['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue.")
+                    self.music_queue.append({'song': song, 'channel': voice_channel})
+                    
+                    if self.voice_client == None or self.voice_client.is_playing() == False:
+                        await self.start_playing(ctx)
 
     @commands.command(name="pause", help="Pauses the current song")
     async def pause(self, ctx, *args):
