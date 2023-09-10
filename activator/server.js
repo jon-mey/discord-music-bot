@@ -76,8 +76,7 @@ router.post('/', async (request, env) => {
         }
 
         const containerStartUrl = `https://management.azure.com/subscriptions/${env.AZURE_SUBSCRIPTION_ID}/resourceGroups/${env.AZURE_RESOURCE_GROUP}/providers/Microsoft.ContainerInstance/containerGroups/${env.AZURE_CONTAINER_NAME}/start?api-version=2022-09-01`;
-        // Don't wait for response, it takes too long.
-        fetch(containerStartUrl, {
+        const response = await fetch(containerStartUrl, {
           headers: {
             'content-type': 'application/json',
             'authorization': `bearer ${token}`,
@@ -88,7 +87,7 @@ router.post('/', async (request, env) => {
         return new JsonResponse({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            content: `Start request sent, bot should join shortly.`,
+            content: `Start request sent, bot should join shortly (${response.status})`,
           },
         });
       }
