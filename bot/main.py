@@ -14,6 +14,6 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/', intents=intents)
 logging.basicConfig(level=logging.INFO)
 
-bot.remove_command('help') # remove the default help command so that we can write out own
+bot.remove_command('help') # remove the default help command so that we can write our own
 bot.setup_hook = setup
 bot.run(getenv("DISCORD_TOKEN"))
