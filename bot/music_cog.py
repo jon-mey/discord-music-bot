@@ -90,8 +90,8 @@ class music_cog(commands.Cog):
         if self.audio != None:
             self.audio.cleanup()
 
-        song = self.music_queue.pop(0)['song']
-        self.audio = discord.FFmpegOpusAudio(source=song['url'], before_options='-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', options=song['ffmpeg_options'])
+        data = self.music_queue.pop(0)
+        self.audio = discord.FFmpegOpusAudio(source=data['song']['url'], before_options='-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', options=data['ffmpeg_options'])
         self.voice_client.play(self.audio, after=lambda error: asyncio.run_coroutine_threadsafe(self.play_next(), self.bot.loop))
 
     async def play_next(self):
