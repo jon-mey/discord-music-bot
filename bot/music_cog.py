@@ -130,10 +130,10 @@ class music_cog(commands.Cog):
         end_time = 0
 
         if len(args) > 1:
-            start_time = args[1]
+            start_time = int(args[1])
             
         if len(args) > 2:
-            end_time = args[2]
+            end_time = int(args[2])
 
         await ctx.send('Downloading metadata for <%s>...' % url_part)
         clip = self.search_yt(url_part)
