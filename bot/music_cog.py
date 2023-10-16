@@ -26,7 +26,6 @@ class music_cog(commands.Cog):
         self.audio = None
         self.music_queue = [] # 2d array containing {song:, channel:}
         self.ytdlp_options = {'format': 'bestaudio', 'verbose': True}
-        self.ffmpeg_options = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         self.voice_client: discord.VoiceClient = None
         self.text_channel: discord.TextChannel = None
         self.inactivity_time = 0
@@ -91,8 +90,8 @@ class music_cog(commands.Cog):
         if self.audio != None:
             self.audio.cleanup()
 
-        url = self.music_queue.pop(0)['song']['url']
-        self.audio = discord.FFmpegOpusAudio(url, **self.ffmpeg_options)
+        song = self.music_queue.pop(0)['song']
+        self.audio = discord.FFmpegOpusAudio(source=song['url'], before_options='-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', options=song['ffmpeg_options'])
         self.voice_client.play(self.audio, after=lambda error: asyncio.run_coroutine_threadsafe(self.play_next(), self.bot.loop))
 
     async def play_next(self):
@@ -118,35 +117,49 @@ class music_cog(commands.Cog):
 
     @commands.command(name="play", aliases=["p", "playing"], help="Plays a given song from youtube")
     async def play(self, ctx, *args):
-        query = " ".join(args)
         voice_channel = ctx.author.voice.channel
         
         if voice_channel is None:
             await ctx.send('You must be in a voice channel.')
-        else:
-            query = query.split("?si")[0]
-            query = query.split("&list")[0]
+            return
+      
+        url_part = args[0]
+        url_part = url_part.split("?si")[0]
+        url_part = url_part.split("&list")[0]
+        start_time = 0
+        end_time = 0
+
+        if len(args) > 1:
+            start_time = args[1]
             
-            await ctx.send('Downloading metadata for <%s>...' % query)
-            song = self.search_yt(query)
+        if len(args) > 2:
+            end_time = args[2]
 
-            if type(song) == type(True):
-                await ctx.send('Error while downloading song metadata.')
+        await ctx.send('Downloading metadata for <%s>...' % url_part)
+        clip = self.search_yt(url_part)
+
+        if type(clip) == type(True):
+            await ctx.send('Error while downloading song metadata.')
+        else:
+            duration = clip['duration']
+            minutes = duration // 60
+            seconds = duration % 60
+            data = {'song': clip, 'channel': voice_channel}
+                    
+            if start_time > 0 and end_time > 0:
+                data['ffmpeg_options'] = f'-ss {start_time} -to {end_time} -vn'
+            elif start_time > 0 and end_time == 0:
+                data['ffmpeg_options'] = f'-ss {start_time} -vn'
+            elif start_time == 0 and end_time > 0:
+                data['ffmpeg_options'] = f'-to {end_time} -vn'
             else:
-                duration = song['duration']
-
-                if song['duration'] > song_max_duration_minutes * 60:
-                    await ctx.send('Song duration too long, max duration is %d minutes.' % song_max_duration_minutes)
+                data['ffmpeg_options'] = '-vn'
+ 
+            await ctx.send(f"\"{clip['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue.")
+            self.music_queue.append(data)
                     
-                else:
-                    minutes = duration // 60
-                    seconds = duration % 60
-
-                    await ctx.send(f"\"{song['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue.")
-                    self.music_queue.append({'song': song, 'channel': voice_channel})
-                    
-                    if self.voice_client == None or self.voice_client.is_playing() == False:
-                        await self.start_playing(ctx)
+            if self.voice_client == None or self.voice_client.is_playing() == False:
+                await self.start_playing(ctx)
 
     @commands.command(name="pause", help="Pauses the current song")
     async def pause(self, ctx, *args):
