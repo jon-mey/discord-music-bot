@@ -145,17 +145,25 @@ class music_cog(commands.Cog):
             minutes = duration // 60
             seconds = duration % 60
             data = {'song': clip, 'channel': voice_channel}
+            duration_message = ''
                     
             if start_time > 0 and end_time > 0:
                 data['ffmpeg_options'] = f'-ss {start_time} -to {end_time} -vn'
+                duration_message = f"({start_time}s-{end_time}s)"
             elif start_time > 0 and end_time == 0:
                 data['ffmpeg_options'] = f'-ss {start_time} -vn'
+                duration_message = f"({start_time}s-*)"
             elif start_time == 0 and end_time > 0:
                 data['ffmpeg_options'] = f'-to {end_time} -vn'
+                duration_message = f"(*-{end_time}s)"
             else:
                 data['ffmpeg_options'] = '-vn'
- 
-            await ctx.send(f"\"{clip['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue.")
+            
+            if len(duration_message) > 0:
+                await ctx.send(f"\"{clip['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue {duration_message}.")
+            else:
+                await ctx.send(f"\"{clip['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue.")
+                
             self.music_queue.append(data)
                     
             if self.voice_client == None or self.voice_client.is_playing() == False:
