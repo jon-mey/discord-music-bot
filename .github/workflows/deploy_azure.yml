@@ -16,6 +16,6 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
-        template: ./main.bicep
+        template: ./.github/workflows/main.bicep
         parameters: 'REPOSITORY_OWNER=${{ github.repository_owner }} READ_PACKAGES_PAT=${{ secrets.READ_PACKAGES_PAT }} DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }} DISCORD_CHANNEL_ID=${{ secrets.DISCORD_CHANNEL_ID }} DISCORD_REQUEST_COMMAND_NAME=${{ secrets.DISCORD_REQUEST_COMMAND_NAME }} AZURE_RESOURCE_GROUP=${{ secrets.AZURE_RESOURCE_GROUP }} AZURE_CONTAINER_NAME=${{ secrets.AZURE_CONTAINER_NAME }} AZURE_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }} AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }} AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}'
         failOnStdErr: false
