@@ -23,9 +23,11 @@ param AZURE_CLIENT_ID string
 @secure()
 param AZURE_CLIENT_SECRET string
 
+param LOCATION string = resourceGroup().location
+
 resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = {
   name: 'discord-music-bot'
-  location: 'northeurope'
+  location: LOCATION
   properties: {
     sku: 'Standard'
     containers: [
