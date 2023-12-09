@@ -20,6 +20,24 @@ jobs:
           with open("activator/wrangler.toml", "w") as f:
               f.write(newText)
 
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          secrets: |
+            AZURE_TENANT_ID
+            AZURE_SUBSCRIPTION_ID
+            AZURE_CLIENT_ID
+            AZURE_CLIENT_SECRET
+            AZURE_RESOURCE_GROUP
+            AZURE_CONTAINER_NAME
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME }}
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18
