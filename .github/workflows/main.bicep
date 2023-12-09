@@ -26,13 +26,13 @@ param AZURE_CLIENT_SECRET string
 param LOCATION string = resourceGroup().location
 
 resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = {
-  name: 'discord-music-bot'
+  name: AZURE_CONTAINER_NAME
   location: LOCATION
   properties: {
     sku: 'Standard'
     containers: [
       {
-          name: 'discord-music-bot'
+          name: AZURE_CONTAINER_NAME
           properties: {
               image: 'ghcr.io/${REPOSITORY_OWNER}/discord-music-bot:latest'
               ports: []
