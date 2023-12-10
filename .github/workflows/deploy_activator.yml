@@ -31,6 +31,7 @@ jobs:
             AZURE_CLIENT_SECRET
             AZURE_RESOURCE_GROUP
             AZURE_CONTAINER_NAME
+            DISCORD_PUBLIC_KEY
             DISCORD_REQUEST_COMMAND_NAME
         env:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -39,6 +40,7 @@ jobs:
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
           AZURE_CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME }}
+          DISCORD_PUBLIC_KEY: ${{ secrets.DISCORD_PUBLIC_KEY }}
           DISCORD_REQUEST_COMMAND_NAME: ${{ secrets.DISCORD_REQUEST_COMMAND_NAME }}
 
       - uses: actions/setup-node@v3
