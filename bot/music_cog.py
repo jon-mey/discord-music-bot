@@ -165,7 +165,7 @@ class music_cog(commands.Cog):
                 rubberband_filters.append(f"pitch={pitch}")
 
             rubberband = ''
-            if rubberband_filters.len > 0:
+            if len(rubberband_filters) > 0:
                 rubberband = f'rubberband={":".join(rubberband_filters)}'
             
             reverse = ''
