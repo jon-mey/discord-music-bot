@@ -125,7 +125,7 @@ class music_cog(commands.Cog):
         url_part = args[0]
         url_part = url_part.split("?si")[0]
         url_part = url_part.split("&list")[0]
-
+        reverse = False
         start, end, tempo, pitch = None, None, None, None
 
         # Parsing the components to extract values
@@ -138,6 +138,8 @@ class music_cog(commands.Cog):
                 tempo = args[i + 1]
             elif args[i] == "-pitch":
                 pitch = args[i + 1]
+            elif args[i] == "-reverse":
+                reverse = True
 
         await ctx.send('Downloading metadata for <%s>...' % url_part)
         clip = self.search_yt(url_part)
@@ -156,16 +158,24 @@ class music_cog(commands.Cog):
             if end:
                 ffmpeg_options += f" -to {end}"
 
-            ffmpeg_filters = []
+            rubberband_filters = []
             if tempo:
-                ffmpeg_filters.append(f"tempo={tempo}")
+                rubberband_filters.append(f"tempo={tempo}")
             if pitch:
-                ffmpeg_filters.append(f"pitch={pitch}")
+                rubberband_filters.append(f"pitch={pitch}")
 
-            filter_string = ":".join(ffmpeg_filters)
+            rubberband = ''
+            if rubberband_filters.len > 0:
+                rubberband = f'rubberband={":".join(rubberband_filters)}'
+            
+            reverse = ''
+            if reverse:
+                reverse='areverse'
+            
+            filter_string = ",".join([rubberband, reverse])
 
             if filter_string:
-                ffmpeg_options += f' -af "rubberband={filter_string}"'
+                ffmpeg_options += f' -af "{filter_string}"'
 
             data['ffmpeg_options'] = ffmpeg_options
 
