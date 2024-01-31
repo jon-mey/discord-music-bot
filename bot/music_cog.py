@@ -162,7 +162,7 @@ class music_cog(commands.Cog):
             if pitch:
                 ffmpeg_filters.append(f"pitch={pitch}")
 
-            filter_string = ",".join(ffmpeg_filters)
+            filter_string = ":".join(ffmpeg_filters)
 
             if filter_string:
                 ffmpeg_options += f' -af "rubberband={filter_string}"'
