@@ -17,7 +17,6 @@ azure_client_secret = getenv("AZURE_CLIENT_SECRET")
 
 request_command_name = getenv("DISCORD_REQUEST_COMMAND_NAME")
 text_channel_id = int(getenv("DISCORD_CHANNEL_ID"))
-song_max_duration_minutes = 15
 max_inactivity_time_minutes = 30
 
 class music_cog(commands.Cog):
@@ -157,7 +156,7 @@ class music_cog(commands.Cog):
                 data['ffmpeg_options'] = f'-to {end_time} -vn'
                 duration_message = f"(*-{end_time}s)"
             else:
-                data['ffmpeg_options'] = '-vn'
+                data['ffmpeg_options'] = '-vn -af "atempo=0.5"'
             
             if len(duration_message) > 0:
                 await ctx.send(f"\"{clip['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue {duration_message}.")
