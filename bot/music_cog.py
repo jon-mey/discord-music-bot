@@ -128,11 +128,15 @@ class music_cog(commands.Cog):
         start_time = 0
         end_time = 0
 
-        if len(args) > 1:
-            start_time = int(args[1])
-            
-        if len(args) > 2:
-            end_time = int(args[2])
+        start, end, tempo = None, None, None
+
+        for i in range(len(args)):
+            if args[i] == "-start":
+                start_time = int(args[i + 1])
+            elif args[i] == "-end":
+                end_time = int(args[i + 1])
+            elif args[i] == "-tempo":
+                tempo = args[i + 1]
 
         await ctx.send('Downloading metadata for <%s>...' % url_part)
         clip = self.search_yt(url_part)
@@ -156,8 +160,11 @@ class music_cog(commands.Cog):
                 data['ffmpeg_options'] = f'-to {end_time} -vn'
                 duration_message = f"(*-{end_time}s)"
             else:
-                data['ffmpeg_options'] = '-vn -af "atempo=0.5"'
+                data['ffmpeg_options'] = '-vn'
             
+            if tempo != None:
+                data['ffmpeg_options'] = f'{data["ffmpeg_options"]} -af "atempo={tempo}"'
+
             if len(duration_message) > 0:
                 await ctx.send(f"\"{clip['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue {duration_message}.")
             else:
