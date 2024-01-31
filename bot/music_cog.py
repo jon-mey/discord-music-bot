@@ -158,21 +158,20 @@ class music_cog(commands.Cog):
             if end:
                 ffmpeg_options += f" -to {end}"
 
+            filters = []
+            if reverse:
+                filters.append('areverse')
+                
             rubberband_filters = []
             if tempo:
                 rubberband_filters.append(f"tempo={tempo}")
             if pitch:
                 rubberband_filters.append(f"pitch={pitch}")
-
-            rubberband = ''
+                
             if len(rubberband_filters) > 0:
-                rubberband = f'rubberband={":".join(rubberband_filters)}'
-            
-            reverse = ''
-            if reverse:
-                reverse='areverse'
-            
-            filter_string = ",".join([rubberband, reverse])
+                filters.append(f'rubberband={":".join(rubberband_filters)}')
+
+            filter_string = ",".join(filters)
 
             if filter_string:
                 ffmpeg_options += f' -af "{filter_string}"'
