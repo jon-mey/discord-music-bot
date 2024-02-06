@@ -164,8 +164,8 @@ class music_cog(commands.Cog):
             minutes = seconds // 60
             seconds = seconds % 60
             clip['duration'] = f'({minutes:02d}:{seconds:02d})'
-            clip['title'] = clip['title']
-            clip['url'] = clip['url']
+            clip['title'] = yt_clip['title']
+            clip['url'] = yt_clip['url']
             
         else:
             clip['url'] = url_part
