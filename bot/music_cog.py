@@ -97,6 +97,7 @@ class music_cog(commands.Cog):
         if len(self.music_queue) > 0:
             self.play_next_item()
         else:
+            await asyncio.sleep(1)
             await self.voice_client.disconnect()
 
     async def start_playing(self, ctx):
