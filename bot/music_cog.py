@@ -114,7 +114,7 @@ class music_cog(commands.Cog):
             
         self.play_next_item()
 
-    @commands.command(name="play", aliases=["p", "playing"], help="Plays a given song from youtube")
+    @commands.command(name="play", aliases=["p", "playing"], help="Plays a given song")
     async def play(self, ctx, *args):
         voice_channel = ctx.author.voice.channel
         
@@ -147,48 +147,68 @@ class music_cog(commands.Cog):
                 start *= 1 / tempo 
             if end is not None:
                 end *= 1 / tempo
+        
+        clip = {}
+        
+        if 'youtu' in url_part:
+            await ctx.send('Downloading metadata for <%s>...' % url_part)
+            
+            yt_clip = self.search_yt(url_part)
+            if type(yt_clip) == type(True):
+                await ctx.send('Error while downloading song metadata.')
                 
-        await ctx.send('Downloading metadata for <%s>...' % url_part)
-        clip = self.search_yt(url_part)
-
-        if type(clip) == type(True):
-            await ctx.send('Error while downloading song metadata.')
+                return
+            
+            seconds = yt_clip['duration']
+            minutes = seconds // 60
+            seconds = seconds % 60
+            clip['duration'] = f'({minutes:02d}:{seconds:02d})'
+            clip['title'] = clip['title']
+            clip['url'] = clip['url']
+            
         else:
-            duration = clip['duration']
-            minutes = duration // 60
-            seconds = duration % 60
-            data = {'song': clip, 'channel': voice_channel}
-            ffmpeg_options = '-vn'
+            clip['url'] = url_part
+            clip['title'] = url_part.split('/')[-1]
 
-            if start:
-                ffmpeg_options += f" -ss {start:.3f}"
-            if end:
-                ffmpeg_options += f" -to {end:.3f}"
+        data = {'song': clip, 'channel': voice_channel}
+        
+        # format ffmpeg options
+        ffmpeg_options = '-vn'
 
-            filters = []
-            if reverse:
-                filters.append('areverse')
+        if start:
+            ffmpeg_options += f" -ss {start:.3f}"
+        if end:
+            ffmpeg_options += f" -to {end:.3f}"
+
+        filters = []
+        if reverse:
+            filters.append('areverse')
                 
-            rubberband_filters = []
-            if tempo:
-                rubberband_filters.append(f"tempo={tempo:.2f}")
-            if pitch:
-                rubberband_filters.append(f"pitch={pitch:.2f}")
+        rubberband_filters = []
+        if tempo:
+            rubberband_filters.append(f"tempo={tempo:.2f}")
+        if pitch:
+            rubberband_filters.append(f"pitch={pitch:.2f}")
                 
-            if len(rubberband_filters) > 0:
-                filters.append(f'rubberband={":".join(rubberband_filters)}')
+        if len(rubberband_filters) > 0:
+            filters.append(f'rubberband={":".join(rubberband_filters)}')
 
-            filter_string = ",".join(filters)
-            if filter_string:
-                ffmpeg_options += f' -af "{filter_string}"'
+        filter_string = ",".join(filters)
+        if filter_string:
+            ffmpeg_options += f' -af "{filter_string}"'
 
-            data['ffmpeg_options'] = ffmpeg_options
+        data['ffmpeg_options'] = ffmpeg_options
 
-            await ctx.send(f"\"{clip['title']}\" ({minutes:02d}:{seconds:02d}) added to the queue.")
-            self.music_queue.append(data)
+        # format message
+        if clip['duration']:
+            await ctx.send(f"\"{clip['title']}\" ({clip['duration']}) added to the queue.")
+        else:
+            await ctx.send(f"\"{clip['title']}\" added to the queue.")
+
+        self.music_queue.append(data)
                     
-            if self.voice_client == None or self.voice_client.is_playing() == False:
-                await self.start_playing(ctx)
+        if self.voice_client == None or self.voice_client.is_playing() == False:
+            await self.start_playing(ctx)
 
     @commands.command(name="pause", help="Pauses the current song")
     async def pause(self, ctx, *args):
