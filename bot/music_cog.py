@@ -200,7 +200,7 @@ class music_cog(commands.Cog):
         data['ffmpeg_options'] = ffmpeg_options
 
         # format message
-        if clip['duration']:
+        if 'duration' in clip:
             await ctx.send(f"\"{clip['title']}\" ({clip['duration']}) added to the queue.")
         else:
             await ctx.send(f"\"{clip['title']}\" added to the queue.")
