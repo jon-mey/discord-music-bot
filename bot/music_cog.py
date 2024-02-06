@@ -131,16 +131,23 @@ class music_cog(commands.Cog):
         # Parsing the components to extract values
         for i in range(len(args)):
             if args[i] == "-start":
-                start = args[i + 1]
+                start = float(args[i + 1]) 
             elif args[i] == "-end":
-                end = args[i + 1]
+                end = float(args[i + 1])
             elif args[i] == "-tempo":
-                tempo = args[i + 1]
+                tempo = float(args[i + 1])
             elif args[i] == "-pitch":
-                pitch = args[i + 1]
+                pitch = float(args[i + 1])
             elif args[i] == "-reverse":
                 reverse = True
-
+                
+        if tempo is not None and tempo != 0:
+             # Adjust start and end time by the inverse of tempo
+            if start is not None:
+                start *= 1 / tempo 
+            if end is not None:
+                end *= 1 / tempo
+                
         await ctx.send('Downloading metadata for <%s>...' % url_part)
         clip = self.search_yt(url_part)
 
@@ -154,9 +161,9 @@ class music_cog(commands.Cog):
             ffmpeg_options = '-vn'
 
             if start:
-                ffmpeg_options += f" -ss {start}"
+                ffmpeg_options += f" -ss {start:.3f}"
             if end:
-                ffmpeg_options += f" -to {end}"
+                ffmpeg_options += f" -to {end:.3f}"
 
             filters = []
             if reverse:
@@ -164,15 +171,14 @@ class music_cog(commands.Cog):
                 
             rubberband_filters = []
             if tempo:
-                rubberband_filters.append(f"tempo={tempo}")
+                rubberband_filters.append(f"tempo={tempo:.2f}")
             if pitch:
-                rubberband_filters.append(f"pitch={pitch}")
+                rubberband_filters.append(f"pitch={pitch:.2f}")
                 
             if len(rubberband_filters) > 0:
                 filters.append(f'rubberband={":".join(rubberband_filters)}')
 
             filter_string = ",".join(filters)
-
             if filter_string:
                 ffmpeg_options += f' -af "{filter_string}"'
 
