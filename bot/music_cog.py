@@ -127,7 +127,7 @@ class music_cog(commands.Cog):
         url_part = url_part.split("?si")[0]
         url_part = url_part.split("&list")[0]
         reverse = False
-        start, end, tempo, pitch = None, None, None, None
+        start, end, tempo, pitch, repeat = None, None, None, None, None
 
         # Parsing the components to extract values
         for i in range(len(args)):
@@ -139,6 +139,8 @@ class music_cog(commands.Cog):
                 tempo = float(args[i + 1])
             elif args[i] == "-pitch":
                 pitch = float(args[i + 1])
+            elif args[i] == "-repeat":
+                repeat = self.clamp(int(args[i + 1]) - 1, 1, 10)
             elif args[i] == "-reverse":
                 reverse = True
                 
@@ -175,7 +177,8 @@ class music_cog(commands.Cog):
         
         # format ffmpeg options
         ffmpeg_options = '-vn'
-
+        if repeat:
+            ffmpeg_options += f' -stream_loop {repeat}'
         if start:
             ffmpeg_options += f" -ss {start:.3f}"
         if end:
@@ -262,3 +265,10 @@ class music_cog(commands.Cog):
     @commands.command(name="leave", aliases=["disconnect", "l", "d"], help="Removes the bot from the voice channel")
     async def leave(self, ctx):
         await self.voice_client.disconnect()
+        
+    def clamp(self, value, min_value, max_value):
+        if value < min_value:
+            return min_value
+        if value > max_value:
+            return max_value
+        return value

@@ -7,7 +7,7 @@ class help_cog(commands.Cog):
 ```
 General commands:
 /help - shows all the available commands
-/play <link> - finds the song on youtube and plays it in your current channel
+/play <link> - plays the given audio clip, supports youtube links. Possible options: (-start, -end, -tempo, -pitch, -repeat, -reverse)
 /queue - shows the current music queue
 /skip - skips the current song being played
 /clear - stops the music and clears the queue
