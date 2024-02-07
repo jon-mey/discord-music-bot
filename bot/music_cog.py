@@ -126,8 +126,8 @@ class music_cog(commands.Cog):
         url_part = args[0]
         url_part = url_part.split("?si")[0]
         url_part = url_part.split("&list")[0]
-        reverse = False
-        start, end, tempo, pitch, repeat = None, None, None, None, None
+        
+        start, end, tempo, pitch, repeat, reverse = None, None, None, None, None, None
 
         # Parsing the components to extract values
         for i in range(len(args)):
