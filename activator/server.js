@@ -84,6 +84,9 @@ router.post('/', async (request, env) => {
           method: 'POST',
         });
 
+        const json = await response.text();
+        console.log(json);
+
         return new JsonResponse({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
