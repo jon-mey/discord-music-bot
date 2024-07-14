@@ -24,7 +24,7 @@ class music_cog(commands.Cog):
         self.bot = bot
         self.audio = None
         self.music_queue = [] # 2d array containing {song:, channel:}
-        self.ytdlp_options = {'format': 'bestaudio', 'verbose': True}
+        self.ytdlp_options = {'format': 'bestaudio', 'verbose': True, 'source_address': '0.0.0.0'}
         self.voice_client: discord.VoiceClient = None
         self.text_channel: discord.TextChannel = None
         self.inactivity_time = 0
