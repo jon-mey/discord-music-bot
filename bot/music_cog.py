@@ -27,7 +27,6 @@ class music_cog(commands.Cog):
         self.ytdlp_options = {
             'format': 'bestaudio/best', 
             'verbose': True, 
-            'listformats': True,
             'source_address': '0.0.0.0', 
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582'
@@ -85,11 +84,8 @@ class music_cog(commands.Cog):
 
     def search_yt(self, url):
         with YoutubeDL(self.ytdlp_options) as ydl:
-            try: 
-                info = ydl.extract_info(url, download=False)
-                info = ydl.sanitize_info(info)
-            except Exception: 
-                return False
+            info = ydl.extract_info(url, download=False)
+            info = ydl.sanitize_info(info)
         
         return {'url': info['url'], 'title': info['title'], 'duration': info['duration']}
 
@@ -164,10 +160,11 @@ class music_cog(commands.Cog):
         if 'youtu' in url_part:
             await ctx.send('Downloading metadata for <%s>...' % url_part)
             
-            yt_clip = self.search_yt(url_part)
-            if type(yt_clip) == type(True):
-                await ctx.send('Error while downloading song metadata.')
-                
+            try:
+                yt_clip = self.search_yt(url_part)
+            except Exception as err:
+                await ctx.send(f'Error: {err=}')
+
                 return
             
             seconds = yt_clip['duration']
