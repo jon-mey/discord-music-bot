@@ -25,19 +25,13 @@ class music_cog(commands.Cog):
         self.audio = None
         self.music_queue = [] # 2d array containing {song:, channel:}
         self.ytdlp_options = {
-            'format': 'bestaudio', 
+            'format': 'bestaudio/best', 
             'verbose': True, 
+            'listformats': True,
             'source_address': '0.0.0.0', 
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582'
-            },
-            'allowed_extractors': ['youtube'],
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['web'],
-                    'player_skip': ['configs', 'js'],
-                },
-            },
+            }
         }
         self.voice_client: discord.VoiceClient = None
         self.text_channel: discord.TextChannel = None
