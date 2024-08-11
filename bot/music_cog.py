@@ -161,7 +161,7 @@ class music_cog(commands.Cog):
         
         clip = {}
         
-        if 'youtu' in url_part:
+        if 'https://youtu' in url_part or 'https://www.youtu' in url_part:
             await ctx.send('Downloading metadata for <%s>...' % url_part)
             
             try:
