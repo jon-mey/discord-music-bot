@@ -25,6 +25,8 @@ class music_cog(commands.Cog):
         self.audio = None
         self.music_queue = [] # 2d array containing {song:, channel:}
         self.ytdlp_options = {
+            'username': getenv("YOUTUBE_USERNAME"),
+            'password': getenv("YOUTUBE_PASSWORD"),
             'format': 'bestaudio/best', 
             'verbose': True, 
             'source_address': '0.0.0.0', 

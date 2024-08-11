@@ -22,6 +22,10 @@ param AZURE_TENANT_ID string
 param AZURE_CLIENT_ID string
 @secure()
 param AZURE_CLIENT_SECRET string
+@secure()
+param YOUTUBE_USERNAME string
+@secure()
+param YOUTUBE_PASSWORD string
 
 param LOCATION string = resourceGroup().location
 
@@ -72,6 +76,14 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2021-03-01'
                   {
                     name: 'AZURE_CLIENT_SECRET'
                     secureValue: AZURE_CLIENT_SECRET
+                  }
+                  {
+                    name: 'YOUTUBE_USERNAME'
+                    secureValue: YOUTUBE_USERNAME
+                  }
+				  {
+                    name: 'YOUTUBE_PASSWORD'
+                    secureValue: YOUTUBE_PASSWORD
                   }
               ]
               resources: {
