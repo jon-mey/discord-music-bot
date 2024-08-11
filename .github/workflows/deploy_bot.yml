@@ -17,6 +17,15 @@ jobs:
       steps:
         - uses: actions/checkout@v3
 
+        - name: Update cookie.txt
+          shell: python
+          run: |
+            with open("bot/cookie.txt") as f:
+              newText = '${{ secrets.YOUTUBE_COOKIE }}'
+          
+            with open("bot/cookie.txt", "w") as f:
+                f.write(newText)
+
         - name: Log in to container registry
           uses: docker/login-action@v2
           with:

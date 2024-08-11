@@ -24,16 +24,18 @@ class music_cog(commands.Cog):
         self.bot = bot
         self.audio = None
         self.music_queue = [] # 2d array containing {song:, channel:}
-        self.ytdlp_options = {
-            'username': getenv("YOUTUBE_USERNAME"),
-            'password': getenv("YOUTUBE_PASSWORD"),
-            'format': 'bestaudio/best', 
-            'verbose': True, 
-            'source_address': '0.0.0.0', 
-            'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582'
+
+        with open('cookie.txt', 'r') as file:
+            self.ytdlp_options = {
+                'format': 'bestaudio/best', 
+                'verbose': True, 
+                'source_address': '0.0.0.0', 
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582',
+                    'Cookie': file.read()
+                }
             }
-        }
+
         self.voice_client: discord.VoiceClient = None
         self.text_channel: discord.TextChannel = None
         self.inactivity_time = 0
