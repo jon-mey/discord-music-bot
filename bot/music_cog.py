@@ -2,20 +2,9 @@ import asyncio
 import discord
 
 from discord.ext import commands
-from discord.ext import tasks
 from yt_dlp import YoutubeDL
-from azure.identity import ClientSecretCredential
-from azure.mgmt.containerinstance import ContainerInstanceManagementClient
 from os import getenv
 
-azure_resource_group = getenv("AZURE_RESOURCE_GROUP")
-azure_container_name = getenv("AZURE_CONTAINER_NAME")
-azure_tenant_id = getenv("AZURE_TENANT_ID")
-azure_subscription_id = getenv("AZURE_SUBSCRIPTION_ID")
-azure_client_id = getenv("AZURE_CLIENT_ID")
-azure_client_secret = getenv("AZURE_CLIENT_SECRET")
-
-request_command_name = getenv("DISCORD_REQUEST_COMMAND_NAME")
 text_channel_id = int(getenv("DISCORD_CHANNEL_ID"))
 max_inactivity_time_minutes = 30
 
@@ -24,24 +13,8 @@ class music_cog(commands.Cog):
         self.bot = bot
         self.audio = None
         self.music_queue = [] # 2d array containing {song:, channel:}
-
-        with open('cookie.txt', 'r') as file:
-            self.ytdlp_options = {
-                'format': 'bestaudio/best', 
-                'verbose': True, 
-                'source_address': '0.0.0.0', 
-                'http_headers': {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582',
-                #    'Cookie': file.read()
-                }
-            }
-
         self.voice_client: discord.VoiceClient = None
         self.text_channel: discord.TextChannel = None
-        self.inactivity_time = 0
-        self.stop_due_to_inactivity = False
-        
-        self.check_activity.start()
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -51,40 +24,6 @@ class music_cog(commands.Cog):
                     self.text_channel = channel
         
         await self.text_channel.send("Greetings. Type /help to show all available commands.")      
-
-    def cog_unload(self):
-        self.check_activity.cancel()
-
-    @tasks.loop(seconds=1.0)
-    async def check_activity(self):
-        if self.voice_client != None and self.voice_client.is_playing():
-            self.inactivity_time = 0
-        else:
-            self.inactivity_time += 1
-        
-        if self.inactivity_time / 60 > max_inactivity_time_minutes:
-            print('Inactivity threshold reached, stopping container.')            
-            self.stop_due_to_inactivity = True
-
-            credential = ClientSecretCredential(
-                tenant_id=azure_tenant_id, 
-                client_id=azure_client_id, 
-                client_secret=azure_client_secret)
-
-            aci_client = ContainerInstanceManagementClient(
-                credential=credential,
-                subscription_id=azure_subscription_id)
-    
-            aci_client.container_groups.stop(azure_resource_group, azure_container_name)
-            
-            self.check_activity.cancel()
-            
-    @check_activity.after_loop
-    async def after_check_activity(self):
-        print('Check activity loop ended')
-        
-        if self.text_channel != None and self.stop_due_to_inactivity:
-            await self.text_channel.send("Stopping after %d minutes of inactivity. Use /%s to request re-join." % (max_inactivity_time_minutes, request_command_name))
 
     def search_yt(self, url):
         with YoutubeDL(self.ytdlp_options) as ydl:
