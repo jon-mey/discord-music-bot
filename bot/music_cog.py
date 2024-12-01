@@ -27,13 +27,16 @@ class music_cog(commands.Cog):
         self.music_queue = [] # 2d array containing {song:, channel:}
 
         with open('cookie.txt', 'r') as file:
+            cookie = file.read()
+            print(f'Cookie: {cookie}')
+
             self.ytdlp_options = {
                 'format': 'bestaudio/best', 
                 'verbose': True, 
                 'source_address': '0.0.0.0', 
                 'http_headers': {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582',
-                    'Cookie': file.read(),
+                    'Cookie': cookie,
                 },
                 'extractor_args': {
                     'youtube': {
