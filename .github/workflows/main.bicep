@@ -25,8 +25,6 @@ param AZURE_CLIENT_SECRET string
 
 @secure()
 param YOUTUBE_PO_TOKEN string
-@secure()
-param YOUTUBE_COOKIE string
 
 param LOCATION string = resourceGroup().location
 
@@ -81,10 +79,6 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2021-03-01'
                   {
                     name: 'YOUTUBE_PO_TOKEN'
                     secureValue: YOUTUBE_PO_TOKEN
-                  }
-                  {
-                    name: 'YOUTUBE_COOKIE'
-                    secureValue: YOUTUBE_COOKIE
                   }
               ]
               resources: {

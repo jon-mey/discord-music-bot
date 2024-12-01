@@ -18,7 +18,6 @@ azure_client_secret = getenv("AZURE_CLIENT_SECRET")
 request_command_name = getenv("DISCORD_REQUEST_COMMAND_NAME")
 text_channel_id = int(getenv("DISCORD_CHANNEL_ID"))
 po_token = getenv("YOUTUBE_PO_TOKEN")
-cookie = getenv("YOUTUBE_COOKIE")
 max_inactivity_time_minutes = 30
 
 class music_cog(commands.Cog):
@@ -26,21 +25,23 @@ class music_cog(commands.Cog):
         self.bot = bot
         self.audio = None
         self.music_queue = [] # 2d array containing {song:, channel:}
-        self.ytdlp_options = {
-            'format': 'bestaudio/best', 
-            'verbose': True, 
-            'source_address': '0.0.0.0', 
-            'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582',
-                'Cookie': cookie,
-            },
-            'extractor_args': {
-                'po_token': po_token,
-                'youtube': {
-                     'player_client': ['web', 'default'],
+
+        with open('cookie.txt', 'r') as file:
+            self.ytdlp_options = {
+                'format': 'bestaudio/best', 
+                'verbose': True, 
+                'source_address': '0.0.0.0', 
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582',
+                    'Cookie': file.read(),
                 },
-            },
-        }
+                'extractor_args': {
+                    'po_token': po_token,
+                    'youtube': {
+                        'player_client': ['web', 'default'],
+                    },
+                },
+            }
 
         self.voice_client: discord.VoiceClient = None
         self.text_channel: discord.TextChannel = None
