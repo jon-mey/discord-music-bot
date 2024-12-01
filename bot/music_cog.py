@@ -36,8 +36,8 @@ class music_cog(commands.Cog):
                     'Cookie': file.read(),
                 },
                 'extractor_args': {
-                    'po_token': po_token,
                     'youtube': {
+                        'po_token': po_token,
                         'player_client': ['web', 'default'],
                     },
                 },
