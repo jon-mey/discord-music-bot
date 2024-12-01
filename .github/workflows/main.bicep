@@ -23,6 +23,9 @@ param AZURE_CLIENT_ID string
 @secure()
 param AZURE_CLIENT_SECRET string
 
+@secure()
+param YOUTUBE_PO_TOKEN string
+
 param LOCATION string = resourceGroup().location
 
 resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = {
@@ -72,6 +75,10 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2021-03-01'
                   {
                     name: 'AZURE_CLIENT_SECRET'
                     secureValue: AZURE_CLIENT_SECRET
+                  }
+                  {
+                    name: 'YOUTUBE_PO_TOKEN'
+                    secureValue: YOUTUBE_PO_TOKEN
                   }
               ]
               resources: {
