@@ -37,7 +37,7 @@ class music_cog(commands.Cog):
                 },
                 'extractor_args': {
                     'youtube': {
-                        'po_token': f'web+{po_token}',
+                        'po_token': [f'web+{po_token}'],
                         'player_client': ['web'],
                     },
                 },
