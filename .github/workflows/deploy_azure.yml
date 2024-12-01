@@ -30,5 +30,6 @@ jobs:
           AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} 
           AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }} 
           YOUTUBE_PO_TOKEN=${{ secrets.YOUTUBE_PO_TOKEN }}
+          YOUTUBE_COOKIE=${{ secrets.YOUTUBE_COOKIE }}
         failOnStdErr: false
         
